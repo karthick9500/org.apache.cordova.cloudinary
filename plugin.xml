@@ -65,6 +65,5 @@
         <header-file src="src/ios/CLUploader.h" />
         <header-file src="src/ios/CloudinaryPlugin.h" />
         <source-file src="src/ios/CloudinaryPlugin.m" />
-        <source-file src="src/ios/libCloudinary.a" />
     </platform>
 </plugin>
