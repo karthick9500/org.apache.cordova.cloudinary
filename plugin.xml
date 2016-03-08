@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="org.apache.cordova.cloudinary"
+    version="0.0.1">
+
+    <name>CloudinaryPlugin</name>
+    <description>
+        Integrates Cloudinary and Cordova
+    </description>
+    <license>MIT</license>
+
+    <engines>
+        <!--
+            ...
+        -->
+        <engine name="cordova" version=">=3.0.0" />
+    </engines>
+
+    <js-module src="www/CloudinaryPlugin.js">
+       <clobbers target="navigator.cloudinary" />
+    </js-module>
+
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="CloudinaryPlugin">
+                <param name="android-package" value="org.apache.cordova.cloudinary.CloudinaryPlugin"/>
+            </feature>   
+        </config-file>
+
+        <source-file src="src/android/cloudinary/Cloudinary.java" target-dir="src/org/apache/cordova/cloudinary" />
+        <source-file src="src/android/cloudinary/Coordinates.java" target-dir="src/org/apache/cordova/cloudinary" />
+        <source-file src="src/android/cloudinary/EagerTransformation.java" target-dir="src/org/apache/cordova/cloudinary" />
+        <source-file src="src/android/cloudinary/MultipartUtility.java" target-dir="src/org/apache/cordova/cloudinary" />
+        <source-file src="src/android/cloudinary/SmartUrlEncoder.java" target-dir="src/org/apache/cordova/cloudinary" />
+        <source-file src="src/android/cloudinary/Transformation.java" target-dir="src/org/apache/cordova/cloudinary" />
+        <source-file src="src/android/cloudinary/Uploader.java" target-dir="src/org/apache/cordova/cloudinary" />
+        <source-file src="src/android/cloudinary/Url.java" target-dir="src/org/apache/cordova/cloudinary" />
+        <source-file src="src/android/cloudinary/Util.java" target-dir="src/org/apache/cordova/cloudinary" />
+
+        <source-file src="src/android/CloudinaryPlugin.java" target-dir="src/org/apache/cordova/cloudinary" />
+
+        <!--
+        <config-file target="AndroidManifest.xml" parent="application">
+            <meta-data android:name="CLOUDINARY_URL" android:value="cloudinary://api_key:api_secret@cloud_name"/>
+        </config-file>
+        -->
+    </platform>
+
+    <!-- ios -->
+    <platform name="ios">
+        <plugins-plist key="CloudinaryPlugin" string="CloudinaryPlugin" />
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="CloudinaryPlugin">
+                <param name="ios-package" value="CloudinaryPlugin" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/CloudinaryPlugin.h" />
+        <source-file src="src/ios/CloudinaryPlugin.m" />
+    </platform>
+</plugin>
