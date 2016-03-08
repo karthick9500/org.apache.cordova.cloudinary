@@ -58,6 +58,11 @@
             </feature>
         </config-file>
 
+        <header-file src="src/ios/CLCloudinary.h" />
+        <header-file src="src/ios/CLEagerTransformation.h" />
+        <header-file src="src/ios/Cloudinary.h" />
+        <header-file src="src/ios/CLTransformation.h" />
+        <header-file src="src/ios/CLUploader.h" />
         <header-file src="src/ios/CloudinaryPlugin.h" />
         <source-file src="src/ios/CloudinaryPlugin.m" />
     </platform>
