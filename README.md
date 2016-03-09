@@ -16,7 +16,8 @@ with:
 ```
 var request     = {
     imagePath           : '<imagePath>',
-    tags                : 'tag1, tag2, tag3',
+    tags                : 'tag1, tag2, tag3', //Optional
+    measures            : { height: <yourDesiredHeight>, width: <yourDesiredWidth> }, //Optional
     cloudinarySettings  : {
         cloudName   : '<CloudinaryCloudName>',
         apiKey      : '<CloudinaryApiKey>',
