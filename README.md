@@ -1,6 +1,6 @@
-# Cordova AppVersion plugin
+# Cordova Cloudinary plugin
 
-Reads the version of your app from the target build settings.
+Integrates some of the [Cloudinary](http://cloudinary.com/) features into Cordova
 
 ## Installation
 
