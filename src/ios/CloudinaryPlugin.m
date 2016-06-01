@@ -9,67 +9,92 @@
 - (void)uploadImage:(CDVInvokedUrlCommand*)command
 {
     NSString* imagePath = [command argumentAtIndex:0];
-    NSLog(@"Image path: %@", imagePath);
-    NSURL *asseturl = [NSURL URLWithString:imagePath];
+    //NSLog(@"Image path: %@", imagePath);
+
+    CLCloudinary *cloudinary = [self getCloudinary:command];
+    NSDictionary* uploadOptions = [self getUploadOptions:command];
+    
+    CLUploader *uploader = [[CLUploader alloc] init:cloudinary delegate:self];
+    
+    [uploader upload:imagePath options:uploadOptions withCompletion:^(NSDictionary *successResult, NSString *errorResult, NSInteger code, id context) {
+        if (successResult) {
+            NSString* publicId = [successResult valueForKey:@"public_id"];
+            NSLog(@"Block upload success. Public ID=%@, Full result=%@", publicId, successResult);
+            
+            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:successResult];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+            
+        } else {
+            
+            NSLog(@"La vara mamo: %@", errorResult);
+            
+            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:successResult];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }
+    } andProgress:^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite, id context) {
+        NSLog(@"Block upload progress: %ld/%ld (+%ld)", (long)totalBytesWritten, (long)totalBytesExpectedToWrite, (long)bytesWritten);
+    }];
+
+    // NSURL *asseturl = [NSURL URLWithString:imagePath];
     
     
-    ALAssetsLibraryAssetForURLResultBlock resultblock = ^(ALAsset *myasset)
-    {
-        NSLog(@"Si pude");
+    // ALAssetsLibraryAssetForURLResultBlock resultblock = ^(ALAsset *myasset)
+    // {
+    //     NSLog(@"Si pude");
         
-        ALAssetRepresentation *rep = [myasset defaultRepresentation];
-        Byte *buffer = (Byte*)malloc(rep.size);
-        NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
-        NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+    //     ALAssetRepresentation *rep = [myasset defaultRepresentation];
+    //     Byte *buffer = (Byte*)malloc(rep.size);
+    //     NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
+    //     NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
         
-        CLCloudinary *cloudinary = [self getCloudinary:command];
-        NSDictionary* uploadOptions = [self getUploadOptions:command];
+    //     CLCloudinary *cloudinary = [self getCloudinary:command];
+    //     NSDictionary* uploadOptions = [self getUploadOptions:command];
         
-        CLUploader *uploader = [[CLUploader alloc] init:cloudinary delegate:self];
+    //     CLUploader *uploader = [[CLUploader alloc] init:cloudinary delegate:self];
         
-        [uploader upload:data options:uploadOptions withCompletion:^(NSDictionary *successResult, NSString *errorResult, NSInteger code, id context) {
-            if (successResult) {
-                NSString* publicId = [successResult valueForKey:@"public_id"];
-                NSLog(@"Block upload success. Public ID=%@, Full result=%@", publicId, successResult);
+    //     [uploader upload:data options:uploadOptions withCompletion:^(NSDictionary *successResult, NSString *errorResult, NSInteger code, id context) {
+    //         if (successResult) {
+    //             NSString* publicId = [successResult valueForKey:@"public_id"];
+    //             NSLog(@"Block upload success. Public ID=%@, Full result=%@", publicId, successResult);
                 
-                CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:successResult];
-                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    //             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:successResult];
+    //             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
                 
-            } else {
+    //         } else {
                 
-                NSLog(@"La vara mamo: %@", errorResult);
+    //             NSLog(@"La vara mamo: %@", errorResult);
                 
-                CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:successResult];
-                [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-            }
-        } andProgress:^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite, id context) {
-            NSLog(@"Block upload progress: %ld/%ld (+%ld)", (long)totalBytesWritten, (long)totalBytesExpectedToWrite, (long)bytesWritten);
-        }];
-    };
+    //             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:successResult];
+    //             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    //         }
+    //     } andProgress:^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite, id context) {
+    //         NSLog(@"Block upload progress: %ld/%ld (+%ld)", (long)totalBytesWritten, (long)totalBytesExpectedToWrite, (long)bytesWritten);
+    //     }];
+    // };
     
-    //
-    ALAssetsLibraryAccessFailureBlock failureblock  = ^(NSError *myerror)
-    {
-        NSLog(@"booya, cant get image - %@",[myerror localizedDescription]);
+    // //
+    // ALAssetsLibraryAccessFailureBlock failureblock  = ^(NSError *myerror)
+    // {
+    //     NSLog(@"booya, cant get image - %@",[myerror localizedDescription]);
         
-        NSDictionary* errorDic = [ [NSDictionary alloc]
-                                  initWithObjectsAndKeys :
-                                  false, @"success",
-                                  [myerror localizedDescription], @"message",
-                                  nil
-                                  ];
+    //     NSDictionary* errorDic = [ [NSDictionary alloc]
+    //                               initWithObjectsAndKeys :
+    //                               false, @"success",
+    //                               [myerror localizedDescription], @"message",
+    //                               nil
+    //                               ];
         
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:errorDic];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    };
+    //     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:errorDic];
+    //     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+    // };
     
-    if(imagePath && [imagePath length])
-    {
-        ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
-        [assetslibrary  assetForURL:asseturl
-                        resultBlock:resultblock
-                       failureBlock:failureblock];
-    }
+    // if(imagePath && [imagePath length])
+    // {
+    //     ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
+    //     [assetslibrary  assetForURL:asseturl
+    //                     resultBlock:resultblock
+    //                    failureBlock:failureblock];
+    // }
 }
 
 //Read the cloudinary connection config settings
